@@ -6,23 +6,67 @@
     android:orientation="vertical"
     tools:context=".RecordEditView">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/cond"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Condition" />
+    <ImageView
+        android:id="@+id/imgPhoto"
+        android:layout_width="264dp"
+        android:layout_height="271dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="120dp"
+        android:contentDescription="@string/app_name"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-    <TextView
-        android:id="@+id/desc"
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="description" />
+        android:layout_gravity="center|top|center_vertical"
+        android:layout_marginTop="100dp"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        tools:ignore="LabelFor" />
 
-    <TextView
-        android:id="@+id/temp"
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/txtDate"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="temp" />
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginBottom="150dp"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:inputType="date"
+        tools:ignore="LabelFor" />
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/txtTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginBottom="60dp"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:includeFontPadding="false"
+        android:inputType="time"
+        tools:ignore="LabelFor" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="75dp"
+        android:layout_marginLeft="75dp"
+        android:layout_marginBottom="36dp"
+        android:text="@string/save" />
+
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="75dp"
+        android:layout_marginRight="75dp"
+        android:layout_marginBottom="36dp"
+        android:text="@string/cancel" />
+
+</FrameLayout>

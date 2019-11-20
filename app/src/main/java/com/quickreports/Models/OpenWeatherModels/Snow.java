@@ -1,9 +1,9 @@
-package com.quickreports.OpenWeatherModels;
+package com.quickreports.Models.OpenWeatherModels;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Rain {
+public class Snow {
     @Expose
     @SerializedName("1h")
     public double hour1;

@@ -1,11 +1,11 @@
-package com.quickreports.OpenWeatherModels;
+package com.quickreports.Models.OpenWeatherModels;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class WeatherModel {
+public class Model {
     @Expose
     @SerializedName("coord")
     public Coord coord;

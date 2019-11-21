@@ -153,11 +153,7 @@ public class RecordEditView extends Fragment {
             }
         });
 
-<<<<<<< Updated upstream
         Log.println(Log.ERROR, LogTag, "Start Request");
-        weather.GetWeatherData(location);
-=======
-        Log.println(Log.ERROR, "Edit", "Start Request");
         weather.GetWeatherData(location);
 >>>>>>> Stashed changes
 

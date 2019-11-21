@@ -2,7 +2,9 @@ package com.quickreports;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -10,10 +12,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.quickreports.Managers.ApiError;
@@ -21,6 +25,7 @@ import com.quickreports.Managers.ApiSuccess;
 import com.quickreports.Managers.WeatherManager;
 import com.quickreports.Models.WeatherModel;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 
@@ -33,12 +38,11 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
  * create an instance of this fragment.
  */
 public class RecordEditView extends Fragment {
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     private OnFragmentInteractionListener mListener;
     private Context context;
 
-    private TextView cond;
-    private TextView desc;
-    private TextView temp;
+    private ImageView imgPhoto;
 
     public RecordEditView() {
         // Required empty public constructor
@@ -74,9 +78,13 @@ public class RecordEditView extends Fragment {
 
         }
 
-        cond = (TextView)getView().findViewById(R.id.cond);
-        desc = (TextView)getView().findViewById(R.id.desc);
-        temp = (TextView)getView().findViewById(R.id.temp);
+        imgPhoto = (ImageView) getView().findViewById(R.id.imgPhoto);
+        imgPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
 
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -86,19 +94,14 @@ public class RecordEditView extends Fragment {
         weather.SetSuccessFunction(new ApiSuccess() {
             @Override
             public void success(WeatherModel model) {
-                Log.println(Log.ERROR, "Edit", "Success");
-                cond.setText(model.condition);
-                desc.setText(model.description);
-                temp.setText(model.temp + "K");
+                Log.println(Log.ERROR, "Edit", "Weather Success");
             }
         });
 
         weather.SetErrorFunction(new ApiError() {
             @Override
             public void error(String message) {
-                cond.setText(message);
-                desc.setText("");
-                temp.setText("");
+                Log.println(Log.ERROR, "Edit", "Weather Error");
             }
         });
 
@@ -149,5 +152,21 @@ public class RecordEditView extends Fragment {
 
     private void LoadRecordListView(){
         ((MainActivity)getActivity()).LoadRecordListView();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imgPhoto.setImageBitmap(imageBitmap);
+        }
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
     }
 }

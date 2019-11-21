@@ -25,8 +25,11 @@ import android.widget.Toast;
 
 import com.quickreports.Managers.ApiError;
 import com.quickreports.Managers.ApiSuccess;
+import com.quickreports.Managers.CameraManager;
 import com.quickreports.Managers.WeatherManager;
 import com.quickreports.Models.WeatherModel;
+
+import java.io.IOException;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,9 +48,10 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
  * create an instance of this fragment.
  */
 public class RecordEditView extends Fragment {
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static String LogTag = "QuickReports-Edit";
     private OnFragmentInteractionListener mListener;
     private Context context;
+    CameraManager camera;
 
     private ImageView imgPhoto;
 
@@ -76,6 +80,7 @@ public class RecordEditView extends Fragment {
     @Override
     public void onStart(){
         context = getActivity();
+        camera = new CameraManager(this);
 
         if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
@@ -121,7 +126,11 @@ public class RecordEditView extends Fragment {
         imgPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                try {
+                    camera.TakePicture();
+                } catch (IOException e){
+                    Log.println(Log.ERROR, LogTag, e.getStackTrace().toString());
+                }
             }
         });
 
@@ -133,18 +142,18 @@ public class RecordEditView extends Fragment {
         weather.SetSuccessFunction(new ApiSuccess() {
             @Override
             public void success(WeatherModel model) {
-                Log.println(Log.ERROR, "Edit", "Weather Success");
+                Log.println(Log.DEBUG, LogTag, "Weather Success");
             }
         });
 
         weather.SetErrorFunction(new ApiError() {
             @Override
             public void error(String message) {
-                Log.println(Log.ERROR, "Edit", "Weather Error");
+                Log.println(Log.ERROR, LogTag, "Weather Error:" + message);
             }
         });
 
-        Log.println(Log.ERROR, "Edit", "Start Request");
+        Log.println(Log.ERROR, LogTag, "Start Request");
         weather.GetWeatherData(location);
 
         super.onStart();
@@ -195,17 +204,19 @@ public class RecordEditView extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == camera.GetRequestCode() && resultCode == RESULT_OK) {
+            Log.println(Log.DEBUG, LogTag, "Recieved Camera Result");
+            camera.galleryAddPic();
+            Log.println(Log.DEBUG, LogTag, "Posted pic to gallery");
             Bundle extras = data.getExtras();
+            if (extras == null) {
+                Log.println(Log.ERROR, LogTag, "Image data empty");
+                return;
+            }
+
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imgPhoto.setImageBitmap(imageBitmap);
-        }
-    }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 }

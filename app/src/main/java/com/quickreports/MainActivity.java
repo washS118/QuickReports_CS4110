@@ -8,9 +8,13 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.Button;
 
+import com.quickreports.Managers.DatabaseManager;
+
 public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     Button btnCreateReport;
+    DatabaseManager reportDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         SetFragment(new RecordEditView());
+        reportDB = new DatabaseManager(this);
     }
 
     public void LoadRecordListView(){

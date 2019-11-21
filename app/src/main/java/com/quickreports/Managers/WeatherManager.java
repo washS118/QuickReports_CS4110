@@ -17,6 +17,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WeatherManager {
+    private static String LogTag = "QuickReports-WeatherManager";
     private static String apiKey = "ab322bd7f15f82f9f9a15f3284a0a2d6";
     private Retrofit retrofit;
     private ApiService service;
@@ -42,12 +43,12 @@ public class WeatherManager {
                 .subscribe(new SingleObserver<Model>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.println(Log.ERROR, "Weather", "Subscribe");
+                        Log.println(Log.DEBUG, LogTag, "Subscribe");
                     }
 
                     @Override
                     public void onSuccess(Model result) {
-                        Log.println(Log.ERROR, "Weather", "Success");
+                        Log.println(Log.DEBUG, LogTag, "Success");
                         if (successFunc == null) return;
 
                         successFunc.success(CreateModel(result));
@@ -55,7 +56,7 @@ public class WeatherManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.println(Log.ERROR, "Weather", "Error");
+                        Log.println(Log.ERROR, LogTag, e.getMessage());
                         if (errorFunc == null) return;
 
                         errorFunc.error(e.getMessage());

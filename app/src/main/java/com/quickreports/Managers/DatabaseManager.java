@@ -4,37 +4,30 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.Nullable;
-
 public class DatabaseManager extends SQLiteOpenHelper {
 
-    //SQLiteDatabase mydatabase = SQLiteDatabase.openOrCreateDatabase("QuickReportsDB", );
+
     public static final String DBName = "QuickReports.db";
+
     public static final String table1Name = "reportsTable";
-    public static final String column1 = "rId";
-    public static final String column2 = "rTitle";
-    public static final String column3 = "rDesc";
-    public static final String column4 = "submitTime";
-    public static final String column5 = "photo";
-    public static final String column6 = "wId";
 
     public static final String table2Name = "weatherTable";
-    public static final String table2column1 = "wId";
-    public static final String table2column2 = "wCondition";
-    public static final String table2column3 = "temperature";
 
-
-    public DatabaseManager(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+    public DatabaseManager(Context context) {
         super(context, DBName, null, 1);
+        SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + table1Name + "(rId INTEGER PRIMARY KEY AUTOINCREMENT,rTitle TEXT,rDesc TEXT,submitTime TIME,photo,wId)");
+        db.execSQL("CREATE TABLE " + table1Name + "(rId INTEGER PRIMARY KEY AUTOINCREMENT,rTitle TEXT,rDesc TEXT,submitTime TEXT,photoPath TEXT,wId INTEGER, FOREIGN KEY(wId) REFERENCES " +table2Name+" (wId))");
+        db.execSQL("CREATE TABLE " + table2Name + "(wId INTEGER PRIMARY KEY AUTOINCREMENT, wCondition TEXT, temperature TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("DROP TABLE " + table2Name);
+        db.execSQL("DROP TABLE " + table1Name);
+        onCreate(db);
     }
 }

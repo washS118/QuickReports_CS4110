@@ -10,11 +10,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.quickreports.Managers.ApiError;
 import com.quickreports.Managers.ApiSuccess;
 import com.quickreports.Managers.WeatherManager;
 import com.quickreports.Models.WeatherModel;
@@ -84,12 +86,23 @@ public class RecordEditView extends Fragment {
         weather.SetSuccessFunction(new ApiSuccess() {
             @Override
             public void success(WeatherModel model) {
+                Log.println(Log.ERROR, "Edit", "Success");
                 cond.setText(model.condition);
                 desc.setText(model.description);
                 temp.setText(model.temp + "K");
             }
         });
 
+        weather.SetErrorFunction(new ApiError() {
+            @Override
+            public void error(String message) {
+                cond.setText(message);
+                desc.setText("");
+                temp.setText("");
+            }
+        });
+
+        Log.println(Log.ERROR, "Edit", "Start Request");
         weather.GetWeatherData(location);
 
         super.onStart();

@@ -17,13 +17,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quickreports.Managers.ApiError;
 import com.quickreports.Managers.ApiSuccess;
 import com.quickreports.Managers.WeatherManager;
 import com.quickreports.Models.WeatherModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
@@ -44,6 +51,9 @@ public class RecordEditView extends Fragment {
 
     private ImageView imgPhoto;
 
+    private Button btnSave, btnBack;
+    private EditText txtDate, txtTime;
+    SimpleDateFormat dateFormat, timeFormat;
     public RecordEditView() {
         // Required empty public constructor
     }
@@ -77,7 +87,36 @@ public class RecordEditView extends Fragment {
 
 
         }
+        txtDate = getView().findViewById(R.id.txtDate);
+        txtTime = getView().findViewById(R.id.txtTime);
+        txtDate.setEnabled(false);
+        txtTime.setEnabled(false);
 
+        dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+        timeFormat = new SimpleDateFormat("h:mm a", Locale.getDefault());
+
+        String date = dateFormat.format(Calendar.getInstance().getTime());
+        String time = timeFormat.format(Calendar.getInstance().getTime());
+
+        txtDate.setText(date);
+        txtTime.setText(time);
+
+        btnSave = getView().findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity().getApplicationContext(), "New Report is Saved.", Toast.LENGTH_SHORT).show();
+                LoadRecordListView();
+            }
+        });
+
+        btnBack = getView().findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoadRecordListView();
+            }
+        });
         imgPhoto = (ImageView) getView().findViewById(R.id.imgPhoto);
         imgPhoto.setOnClickListener(new View.OnClickListener() {
             @Override

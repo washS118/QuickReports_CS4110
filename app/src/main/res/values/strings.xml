@@ -6,4 +6,9 @@
     <string name="create_report" >Create Report</string>
     <string name="save" >Save</string>
     <string name="cancel">Cancel</string>
+    <string name="type_in_description">Type In Description</string>
+    <string name="title_required">Title Required</string>
+    <string name="weather">Weather</string>
+    <string name="input_weather_conditions">Input Weather Conditions</string>
+    <string name="input_weather">Input Weather</string>
 </resources>

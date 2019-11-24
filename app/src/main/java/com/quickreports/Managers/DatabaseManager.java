@@ -17,7 +17,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String t1Col4 = "submitTime";
     public static final String t1Col5 = "photoPath";
     public static final String t1Col6 = "wId";
+
     public static final String table2Name = "weatherTable";
+    public static final String t2Col1 = "wId";
+    public static final String t2Col2 = "wCondition";
+    public static final String t2Col3 = "temperature";
 
     public DatabaseManager(Context context) {
         super(context, DBName, null, 1);
@@ -53,7 +57,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-    public void addWeatherReport(String rTitle, String rDesc, String submitTime, String photoPath) {
-
+    public boolean addWeatherReport(String wCondition, String temperature) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(t2Col2, wCondition);
+        contentValues.put(t1Col3, temperature);
+        long result = db.insert(table2Name, null, contentValues);
+        if(result == -1) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 }

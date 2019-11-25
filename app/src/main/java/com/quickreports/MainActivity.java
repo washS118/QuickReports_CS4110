@@ -14,6 +14,7 @@ import com.quickreports.Managers.DatabaseManager;
 public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     Button btnCreateReport;
+    Button viewReports;
     DatabaseManager reportDB;
 
     @Override
@@ -27,6 +28,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addReportData() {
+        btnCreateReport.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //reportDB.addReport(reportTitle.getText(), reportDescription.getText(), getTimeInString(), getPathOfPhoto());
+                    }
+                }
+        );
+    }
+
+    public void viewReportData() {
         btnCreateReport.setOnClickListener(
                 new View.OnClickListener() {
                     @Override

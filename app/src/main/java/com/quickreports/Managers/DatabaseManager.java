@@ -2,6 +2,7 @@ package com.quickreports.Managers;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -69,5 +70,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         else {
             return true;
         }
+    }
+
+    public Cursor getAllReports() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + table1Name, null);
+        return res;
     }
 }

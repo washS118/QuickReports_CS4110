@@ -5,7 +5,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+<<<<<<< Updated upstream
 import android.net.Uri;
+=======
+
+
+import android.database.Cursor;
+
+
+
+>>>>>>> Stashed changes
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +39,47 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         reportDB = new DatabaseManager(this);
     }
 
+<<<<<<< Updated upstream
+=======
+    public void addReportData() {
+        btnCreateReport.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //reportDB.addReport(reportTitle.getText(), reportDescription.getText(), getTimeInString(), getPathOfPhoto());
+                        //reportDB.addWeatherReport(getWeatherCondition(), getTemperature());
+                    }
+                }
+        );
+    }
+
+    public void viewReportData() {
+        viewReports.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       Cursor res = reportDB.getAllReports();
+                       if(res.getCount() == 0) {
+                           //show message
+                           return;
+                       }
+                       StringBuffer buffer = new StringBuffer();
+                       while(res.moveToNext()) {
+                           buffer.append("Report ID: "+ res.getString(0)+"\n");
+                           buffer.append("Title: "+res.getString(1)+"\n");
+                           buffer.append("Description: "+res.getString(2)+"\n");
+                           buffer.append("Time Submitted: "+res.getString(3)+"\n");
+                           buffer.append("Photo: "+res.getString(4)+"\n");
+                           buffer.append("WeatherId: "+res.getString(5)+"\n");
+                           buffer.append("Weather Condition: "+res.getString(6)+"\n");
+                           buffer.append("Temperature: "+res.getString(7)+"\n");
+                       }
+                    }
+                }
+        );
+    }
+
+>>>>>>> Stashed changes
     public void LoadRecordListView(){
         SetFragment(new RecordListView());
     }

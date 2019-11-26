@@ -33,6 +33,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + table1Name + "(rId INTEGER PRIMARY KEY AUTOINCREMENT,rTitle TEXT,rDesc TEXT,submitTime TEXT,photoPath TEXT,wId INTEGER, FOREIGN KEY(wId) REFERENCES " +table2Name+" (wId))");
         db.execSQL("CREATE TABLE " + table2Name + "(wId INTEGER PRIMARY KEY AUTOINCREMENT, wCondition TEXT, temperature TEXT)");
+        db.execSQL("INSERT INTO " + table2Name + " VALUES('Snowy', '88 Degrees F')");
+        db.execSQL("INSERT INTO " + table1Name + " VALUES('Report 1', 'Accident not my fault.', '8:00am', 'photopath')");
     }
 
     @Override
@@ -74,7 +76,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public Cursor getAllReports() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + table1Name, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + table1Name + " INNER JOIN "+ table2Name+" ON "+table1Name+".wId = "+table2Name+".wId WHERE "+table1Name+".rId = "+table2Name+".wId;", null);
         return res;
     }
 }

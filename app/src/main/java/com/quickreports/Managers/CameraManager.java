@@ -37,6 +37,10 @@ public class CameraManager {
         return currentPhotoPath;
     }
 
+    public String GetCurrentPhotoPath() {
+        return currentPhotoPath;
+    }
+
     public int GetRequestCode(){
         return REQUEST_IMAGE_CAPTURE;
     }

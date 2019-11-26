@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -174,8 +175,8 @@ public class RecordEditView extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            //throw new RuntimeException(context.toString()
-            //        + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -213,17 +214,42 @@ public class RecordEditView extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == camera.GetRequestCode() && resultCode == RESULT_OK) {
             Log.println(Log.DEBUG, LogTag, "Recieved Camera Result");
+
             camera.galleryAddPic();
             Log.println(Log.DEBUG, LogTag, "Posted pic to gallery");
-            Bundle extras = data.getExtras();
-            if (extras == null) {
-                Log.println(Log.ERROR, LogTag, "Image data empty");
-                return;
-            }
 
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imgPhoto.setImageBitmap(imageBitmap);
+            setPic();
+            Log.println(Log.DEBUG, LogTag, "Loaded pic in app");
 
         }
+    }
+
+    private void setPic() {
+        Log.println(Log.DEBUG, LogTag, "Set Picture");
+        // Get the dimensions of the View
+        int targetW = imgPhoto.getWidth();
+        int targetH = imgPhoto.getHeight();
+
+        Log.println(Log.DEBUG, LogTag, "Get bitmap size");
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        Log.println(Log.DEBUG, LogTag, "calculate bitmap scale");
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        Log.println(Log.DEBUG, LogTag, "Set bitmap size");
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Log.println(Log.DEBUG, LogTag, "Load pic from device");
+        Bitmap bitmap = BitmapFactory.decodeFile(camera.GetCurrentPhotoPath(), bmOptions);
+        imgPhoto.setImageBitmap(bitmap);
     }
 }

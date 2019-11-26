@@ -59,10 +59,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-
-    public Cursor getAllReports() {
+    public Cursor getReportById(int ID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + table1Name + ";", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + table1Name + "WHERE rId = "+ID+";",null);
         return res;
+    }
+
+    public ReportModel getAllReports() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ReportModel[] model;
+        Cursor res = db.rawQuery("SELECT * FROM " + table1Name + ";", null);
+        return ;
     }
 }

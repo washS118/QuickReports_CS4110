@@ -1,14 +1,14 @@
 package com.quickreports.Models;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class ReportModel {
     public int id;
     public String title;
     public String desc;
-    public Date submisionDate;
-    public Time submisionTime;
+    public LocalDate submisionDate;
+    public LocalTime submisionTime;
     public String imgPath;
     public WeatherModel weather;
 }

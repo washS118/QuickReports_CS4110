@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+
 import android.net.Uri;
 
 import android.database.Cursor;
@@ -39,8 +40,7 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //reportDB.addReport(reportTitle.getText(), reportDescription.getText(), getTimeInString(), getPathOfPhoto());
-                        //reportDB.addWeatherReport(getWeatherCondition(), getTemperature());
+                        reportDB.addReport(model);
                     }
                 }
         );
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
                 }
         );
     }
+
 
     public void LoadRecordListView(){
         SetFragment(RecordListView.newInstance());

@@ -157,7 +157,6 @@ public class RecordEditView extends Fragment {
         weather.GetWeatherData(location);
         Log.println(Log.ERROR, "Edit", "Start Request");
         weather.GetWeatherData(location);
->>>>>>> Stashed changes
 
         super.onStart();
     }
@@ -202,7 +201,12 @@ public class RecordEditView extends Fragment {
     }
 
     private void LoadRecordListView(){
-        ((MainActivity)getActivity()).LoadRecordListView();
+        try {
+            ((MainActivity)getActivity()).LoadRecordListView();
+        } catch (Exception e) {
+            Log.println(Log.ERROR, LogTag, "Load List View Fail.\n" + e.getMessage());
+        }
+
     }
 
     @Override

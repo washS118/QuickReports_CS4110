@@ -55,32 +55,37 @@ public class RecordEditView extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Context context;
 
-    //Managers
+    //region Managers
     private CameraManager camera;
     private DatabaseManager database;
     private WeatherManager weather;
+    //endregion
 
-    //Views
+    //region Views
     private ImageView imgPhoto;
     private Button btnSave, btnBack;
     private EditText txtDate, txtTime;
     private SimpleDateFormat dateFormat, timeFormat;
+    //endregion
 
-    //Model
+    private int reportId;
     private ReportModel model;
 
-    
+    //region Constructors
     public RecordEditView() {
         // Required empty public constructor
     }
 
-    public static RecordEditView newInstance() {
+    public static RecordEditView newInstance(int reportId) {
         RecordEditView fragment = new RecordEditView();
         Bundle args = new Bundle();
+        args.putInt("reportId", reportId);
         fragment.setArguments(args);
         return fragment;
     }
+    //endregion
 
+    //region Lifecycle
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,16 +99,7 @@ public class RecordEditView extends Fragment {
         context = getActivity();
         camera = new CameraManager(this);
 
-        if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
 
-            if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                super.onStart();
-                return;
-            }
-
-
-        }
         txtDate = getView().findViewById(R.id.txtDate);
         txtTime = getView().findViewById(R.id.txtTime);
         txtDate.setEnabled(false);
@@ -134,6 +130,7 @@ public class RecordEditView extends Fragment {
                 LoadRecordListView();
             }
         });
+
         imgPhoto = (ImageView) getView().findViewById(R.id.imgPhoto);
         imgPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,29 +143,8 @@ public class RecordEditView extends Fragment {
             }
         });
 
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        WeatherManager weather = new WeatherManager();
-
-        weather.SetSuccessFunction(new ApiSuccess() {
-            @Override
-            public void success(WeatherModel model) {
-                Log.println(Log.DEBUG, LogTag, "Weather Success");
-            }
-        });
-
-        weather.SetErrorFunction(new ApiError() {
-            @Override
-            public void error(String message) {
-                Log.println(Log.ERROR, LogTag, "Weather Error:" + message);
-            }
-        });
-
-        Log.println(Log.ERROR, LogTag, "Start Request");
-        weather.GetWeatherData(location);
-        Log.println(Log.ERROR, "Edit", "Start Request");
-        weather.GetWeatherData(location);
+        SetupWeather();
+        GetWeather();
 
         super.onStart();
     }
@@ -196,6 +172,7 @@ public class RecordEditView extends Fragment {
         super.onDetach();
         mListener = null;
     }
+    //endregion
 
     /**
      * This interface must be implemented by activities that contain this
@@ -221,6 +198,7 @@ public class RecordEditView extends Fragment {
 
     }
 
+    //region Main Logic
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == camera.GetRequestCode() && resultCode == RESULT_OK) {
@@ -264,5 +242,56 @@ public class RecordEditView extends Fragment {
         imgPhoto.setImageBitmap(bitmap);
     }
 
-    private void SetupWeather
+    private void SetupWeather() {
+
+        weather = new WeatherManager();
+
+        weather.SetSuccessFunction(new ApiSuccess() {
+            @Override
+            public void success(WeatherModel newModel) {
+                Log.println(Log.DEBUG, LogTag, "Weather Success");
+                model.weather = newModel;
+            }
+        });
+
+        weather.SetErrorFunction(new ApiError() {
+            @Override
+            public void error(String message) {
+                Log.println(Log.ERROR, LogTag, "Weather Error:" + message);
+            }
+        });
+    }
+
+    private void GetWeather(){
+        Location location = GetLocation();
+        if (location == null) return;
+
+        Log.println(Log.ERROR, LogTag, "Start Request");
+        weather.GetWeatherData(location);
+        Log.println(Log.ERROR, "Edit", "Start Request");
+        weather.GetWeatherData(location);
+    }
+
+    private Location GetLocation(){
+        boolean hasPermission = true;
+
+        Log.println(Log.DEBUG, LogTag, "Requesting Location Permission");
+        if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+
+            if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                hasPermission = false;
+            }
+        }
+
+        if (!hasPermission){
+            Log.println(Log.ERROR, LogTag, "Location Permission Denied");
+        } else {
+            Log.println(Log.DEBUG, LogTag, "Location Permission Granted");
+        }
+
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    }
+    //endregion
 }

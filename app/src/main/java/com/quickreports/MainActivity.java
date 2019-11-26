@@ -5,29 +5,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-<<<<<<< Updated upstream
 import android.net.Uri;
 
 import android.database.Cursor;
 
-=======
-
-import android.net.Uri;
-
-
-
-import android.database.Cursor;
-
-
-
-
->>>>>>> Stashed changes
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.quickreports.Managers.DatabaseManager;
+import com.quickreports.Models.ReportModel;
 
 public class MainActivity extends AppCompatActivity implements RecordEditView.OnFragmentInteractionListener, RecordListView.OnFragmentInteractionListener {
     private static String LogTag = "QuickReports-MainActivity";
@@ -46,10 +34,6 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         reportDB = new DatabaseManager(this);
     }
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     public void addReportData() {
         btnCreateReport.setOnClickListener(
                 new View.OnClickListener() {
@@ -88,16 +72,12 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         );
     }
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     public void LoadRecordListView(){
-        SetFragment(new RecordListView());
+        SetFragment(RecordListView.newInstance());
     }
 
-    public void LoadRecordEditView(){
-        SetFragment(new RecordEditView());
+    public void LoadRecordEditView(int reportId){
+        SetFragment(RecordEditView.newInstance(reportId));
     }
 
     private void SetFragment(Fragment fragment){

@@ -76,7 +76,6 @@ public class WeatherManager {
         WeatherModel model = new WeatherModel();
 
         model.condition = apiResult.weather.get(0).main;
-        model.description = apiResult.weather.get(0).description;
         model.temp = apiResult.main.temp;
 
         return model;

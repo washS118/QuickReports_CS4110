@@ -27,7 +27,7 @@ public class WeatherManager {
 
     public WeatherManager(){
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org/data/2.5/weather/")
+                .baseUrl("http://api.openweathermap.org/data/2.5/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
@@ -36,7 +36,7 @@ public class WeatherManager {
     }
 
     public void GetWeatherData(Location location){
-        Single<Model> weather = service.GetWeatherData(location.getLatitude(), location.getLongitude(), apiKey);
+        final Single<Model> weather = service.GetWeatherData(location.getLatitude(), location.getLongitude(), apiKey);
         weather
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

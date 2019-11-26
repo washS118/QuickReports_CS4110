@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.quickreports.Models.ReportModel;
+
 public class DatabaseManager extends SQLiteOpenHelper {
 
 
@@ -17,12 +19,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String t1Col3 = "rDesc";
     public static final String t1Col4 = "submitTime";
     public static final String t1Col5 = "photoPath";
-    public static final String t1Col6 = "wId";
-
-    public static final String table2Name = "weatherTable";
-    public static final String t2Col1 = "wId";
-    public static final String t2Col2 = "wCondition";
-    public static final String t2Col3 = "temperature";
+    public static final String t1Col6 = "wCondition";
+    public static final String t1Col7 = "temperature";
 
     public DatabaseManager(Context context) {
         super(context, DBName, null, 1);
@@ -31,26 +29,25 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + table1Name + "(rId INTEGER PRIMARY KEY AUTOINCREMENT,rTitle TEXT,rDesc TEXT,submitTime TEXT,photoPath TEXT,wId INTEGER, FOREIGN KEY(wId) REFERENCES " +table2Name+" (wId))");
-        db.execSQL("CREATE TABLE " + table2Name + "(wId INTEGER PRIMARY KEY AUTOINCREMENT, wCondition TEXT, temperature TEXT)");
-        db.execSQL("INSERT INTO " + table2Name + " VALUES('Snowy', '88 Degrees F')");
-        db.execSQL("INSERT INTO " + table1Name + " VALUES('Report 1', 'Accident not my fault.', '8:00am', 'photopath')");
+        db.execSQL("CREATE TABLE " + table1Name + "(rId INTEGER PRIMARY KEY AUTOINCREMENT,rTitle TEXT,rDesc TEXT,submitTime TEXT,submitDate TEXT,photoPath TEXT,wId INTEGER, wCondition TEXT, temperature TEXT)");
+        db.execSQL("INSERT INTO " + table1Name + "(rTitle, rDesc, submitTime,submitDate, photoPath, wCondition, temperature) VALUES('Report 1', 'Accident not my fault.', '8:00am','11/22/19', 'photopath','Snowy', '88 Degrees F')");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE " + table2Name);
         db.execSQL("DROP TABLE " + table1Name);
         onCreate(db);
     }
 
-    public boolean addReport(String rTitle, String rDesc, String submitTime, String photoPath) {
+    public boolean addReport(ReportModel model) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(t1Col2, rTitle);
         contentValues.put(t1Col3, rDesc);
         contentValues.put(t1Col4, submitTime);
         contentValues.put(t1Col5, photoPath);
+        contentValues.put(t1Col6, wCondition);
+        contentValues.put(t1Col7, temperature);
         long result = db.insert(table1Name, null, contentValues);
         if(result == -1) {
             return false;
@@ -60,23 +57,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-    public boolean addWeatherReport(String wCondition, String temperature) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(t2Col2, wCondition);
-        contentValues.put(t1Col3, temperature);
-        long result = db.insert(table2Name, null, contentValues);
-        if(result == -1) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
 
     public Cursor getAllReports() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + table1Name + " INNER JOIN "+ table2Name+" ON "+table1Name+".wId = "+table2Name+".wId WHERE "+table1Name+".rId = "+table2Name+".wId;", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + table1Name + ";", null);
         return res;
     }
 }

@@ -5,10 +5,23 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+<<<<<<< Updated upstream
 import android.net.Uri;
 
 import android.database.Cursor;
 
+=======
+
+import android.net.Uri;
+
+
+
+import android.database.Cursor;
+
+
+
+
+>>>>>>> Stashed changes
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +46,10 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         reportDB = new DatabaseManager(this);
     }
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     public void addReportData() {
         btnCreateReport.setOnClickListener(
                 new View.OnClickListener() {
@@ -71,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         );
     }
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     public void LoadRecordListView(){
         SetFragment(new RecordListView());
     }

@@ -27,7 +27,9 @@ import android.widget.Toast;
 import com.quickreports.Managers.ApiError;
 import com.quickreports.Managers.ApiSuccess;
 import com.quickreports.Managers.CameraManager;
+import com.quickreports.Managers.DatabaseManager;
 import com.quickreports.Managers.WeatherManager;
+import com.quickreports.Models.ReportModel;
 import com.quickreports.Models.WeatherModel;
 
 import java.io.IOException;
@@ -52,13 +54,22 @@ public class RecordEditView extends Fragment {
     private static String LogTag = "QuickReports-Edit";
     private OnFragmentInteractionListener mListener;
     private Context context;
-    CameraManager camera;
 
+    //Managers
+    private CameraManager camera;
+    private DatabaseManager database;
+    private WeatherManager weather;
+
+    //Views
     private ImageView imgPhoto;
-
     private Button btnSave, btnBack;
     private EditText txtDate, txtTime;
-    SimpleDateFormat dateFormat, timeFormat;
+    private SimpleDateFormat dateFormat, timeFormat;
+
+    //Model
+    private ReportModel model;
+
+    
     public RecordEditView() {
         // Required empty public constructor
     }
@@ -252,4 +263,6 @@ public class RecordEditView extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeFile(camera.GetCurrentPhotoPath(), bmOptions);
         imgPhoto.setImageBitmap(bitmap);
     }
+
+    private void SetupWeather
 }

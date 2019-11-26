@@ -18,9 +18,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String t1Col2 = "rTitle";
     public static final String t1Col3 = "rDesc";
     public static final String t1Col4 = "submitTime";
-    public static final String t1Col5 = "photoPath";
-    public static final String t1Col6 = "wCondition";
-    public static final String t1Col7 = "temperature";
+    public static final String t1Col5 = "submitDate";
+    public static final String t1Col6 = "photoPath";
+    public static final String t1Col7 = "wCondition";
+    public static final String t1Col8 = "temperature";
 
     public DatabaseManager(Context context) {
         super(context, DBName, null, 1);
@@ -29,8 +30,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + table1Name + "(rId INTEGER PRIMARY KEY AUTOINCREMENT,rTitle TEXT,rDesc TEXT,submitTime TEXT,submitDate TEXT,photoPath TEXT,wId INTEGER, wCondition TEXT, temperature TEXT)");
-        db.execSQL("INSERT INTO " + table1Name + "(rTitle, rDesc, submitTime,submitDate, photoPath, wCondition, temperature) VALUES('Report 1', 'Accident not my fault.', '8:00am','11/22/19', 'photopath','Snowy', '88 Degrees F')");
+        db.execSQL("CREATE TABLE " + table1Name + "(rId INTEGER PRIMARY KEY AUTOINCREMENT,rTitle TEXT,rDesc TEXT,submitTime TEXT,submitDate TEXT,photoPath TEXT, wCondition TEXT, temperature TEXT)");
+        //db.execSQL("INSERT INTO " + table1Name + "(rTitle, rDesc, submitTime,submitDate, photoPath, wCondition, temperature) VALUES('Report 1', 'Accident not my fault.', '8:00am','11/22/19', 'photopath','Snowy', '88 Degrees F')");
     }
 
     @Override
@@ -42,12 +43,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public boolean addReport(ReportModel model) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(t1Col2, rTitle);
-        contentValues.put(t1Col3, rDesc);
-        contentValues.put(t1Col4, submitTime);
-        contentValues.put(t1Col5, photoPath);
-        contentValues.put(t1Col6, wCondition);
-        contentValues.put(t1Col7, temperature);
+        contentValues.put(t1Col2, model.title);
+        contentValues.put(t1Col3, model.desc);
+        contentValues.put(t1Col4, model.submisionTime.toString());
+        contentValues.put(t1Col5, model.submisionDate.toString());
+        contentValues.put(t1Col6, model.imgPath);
+        contentValues.put(t1Col7, model.weather.condition);
+        contentValues.put(t1Col8, model.weather.temp);
         long result = db.insert(table1Name, null, contentValues);
         if(result == -1) {
             return false;

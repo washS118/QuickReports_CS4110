@@ -9,5 +9,5 @@ public class ReportModel {
     public Date submisionDate;
     public Time submisionTime;
     public String imgPath;
-    WeatherModel weather;
+    public WeatherModel weather;
 }

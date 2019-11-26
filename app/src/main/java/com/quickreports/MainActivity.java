@@ -5,29 +5,30 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-<<<<<<< Updated upstream
-import android.net.Uri;
-
-import android.database.Cursor;
-
-=======
 
 import android.net.Uri;
-
-
 
 import android.database.Cursor;
 
 
 
+import android.net.Uri;
 
->>>>>>> Stashed changes
+
+
+import android.database.Cursor;
+
+
+
+
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.quickreports.Managers.DatabaseManager;
+import com.quickreports.Models.ReportModel;
 
 public class MainActivity extends AppCompatActivity implements RecordEditView.OnFragmentInteractionListener, RecordListView.OnFragmentInteractionListener {
     private static String LogTag = "QuickReports-MainActivity";
@@ -46,17 +47,15 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         reportDB = new DatabaseManager(this);
     }
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
-    public void addReportData() {
+
+
+    public void addReportData(ReportModel model) {
         btnCreateReport.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //reportDB.addReport(reportTitle.getText(), reportDescription.getText(), getTimeInString(), getPathOfPhoto());
-                        //reportDB.addWeatherReport(getWeatherCondition(), getTemperature());
+                        reportDB.addReport(model);
                     }
                 }
         );
@@ -88,10 +87,7 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         );
     }
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
     public void LoadRecordListView(){
         SetFragment(new RecordListView());
     }

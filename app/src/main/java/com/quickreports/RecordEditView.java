@@ -157,6 +157,7 @@ public class RecordEditView extends Fragment {
         weather.GetWeatherData(location);
         Log.println(Log.ERROR, "Edit", "Start Request");
         weather.GetWeatherData(location);
+>>>>>>> Stashed changes
 
         super.onStart();
     }

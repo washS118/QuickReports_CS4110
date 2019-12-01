@@ -26,21 +26,35 @@ public class CameraManager {
     private String currentPhotoPath;
 
 
+    /**
+     * Initialize camera manager
+     * @param fragment the fragment that is handling camera requests
+     */
     public CameraManager(Fragment fragment){
         frag = fragment;
         context = frag.getContext();
     }
 
-    public String TakePicture() throws IOException{
+    /**
+     * Creates take picture intent
+     * @throws IOException
+     */
+    public void TakePicture() throws IOException{
         dispatchTakePictureIntent();
-
-        return currentPhotoPath;
     }
 
+    /**
+     * Get the path to the last photo taken
+     * @return path to an image
+     */
     public String GetCurrentPhotoPath() {
         return currentPhotoPath;
     }
 
+    /**
+     * Get the request code of the intent
+     * @return intent request code
+     */
     public int GetRequestCode(){
         return REQUEST_IMAGE_CAPTURE;
     }
@@ -86,6 +100,9 @@ public class CameraManager {
         return image;
     }
 
+    /**
+     * Add the picture to photo gallery
+     */
     public void galleryAddPic() {
         Log.println(Log.DEBUG, LogTag, "Add To Gallery");
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

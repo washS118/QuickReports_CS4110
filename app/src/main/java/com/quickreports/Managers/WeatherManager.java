@@ -25,6 +25,9 @@ public class WeatherManager {
     private ApiSuccess successFunc;
     private ApiError errorFunc;
 
+    /**
+     * Initialize the weather manager
+     */
     public WeatherManager(){
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.openweathermap.org/data/2.5/")
@@ -35,6 +38,10 @@ public class WeatherManager {
         service = retrofit.create(ApiService.class);
     }
 
+    /**
+     * Initiates weather data retrieval
+     * @param location Location to retrieve weather data for
+     */
     public void GetWeatherData(Location location){
         final Single<Model> weather = service.GetWeatherData(location.getLatitude(), location.getLongitude(), apiKey);
         weather
@@ -64,10 +71,18 @@ public class WeatherManager {
         });
     }
 
+    /**
+     * Set a function to run when weather data is retrieved successfully
+     * @param success A function to call on success
+     */
     public void SetSuccessFunction(ApiSuccess success){
         successFunc = success;
     }
 
+    /**
+     * et a function to run when weather data fails to be retrieved
+     * @param error A function to call on an error
+     */
     public void SetErrorFunction(ApiError error){
         errorFunc = error;
     }

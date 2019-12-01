@@ -20,10 +20,7 @@ import com.quickreports.Models.ReportModel;
 
 public class MainActivity extends AppCompatActivity implements RecordEditView.OnFragmentInteractionListener, RecordListView.OnFragmentInteractionListener {
     private static String LogTag = "QuickReports-MainActivity";
-    FragmentManager fragmentManager;
-    Button btnCreateReport;
-    Button viewReports;
-    DatabaseManager reportDB;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,49 +28,8 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         setContentView(R.layout.activity_main);
 
         fragmentManager = getSupportFragmentManager();
-        SetFragment(new RecordListView());
-        reportDB = new DatabaseManager(this);
+        LoadRecordListView();
     }
-
-    /*
-    public void addReportData() {
-        btnCreateReport.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        reportDB.addReport(model);
-                    }
-                }
-        );
-    }
-
-    public void viewReportData() {
-        viewReports.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                       Cursor res = reportDB.getAllReports();
-                       if(res.getCount() == 0) {
-                           //show message
-                           return;
-                       }
-                       StringBuffer buffer = new StringBuffer();
-                       while(res.moveToNext()) {
-                           buffer.append("Report ID: "+ res.getString(0)+"\n");
-                           buffer.append("Title: "+res.getString(1)+"\n");
-                           buffer.append("Description: "+res.getString(2)+"\n");
-                           buffer.append("Time Submitted: "+res.getString(3)+"\n");
-                           buffer.append("Photo: "+res.getString(4)+"\n");
-                           buffer.append("WeatherId: "+res.getString(5)+"\n");
-                           buffer.append("Weather Condition: "+res.getString(6)+"\n");
-                           buffer.append("Temperature: "+res.getString(7)+"\n");
-                       }
-                    }
-                }
-        );
-    }
-    */
-
 
     public void LoadRecordListView(){
         SetFragment(RecordListView.newInstance());

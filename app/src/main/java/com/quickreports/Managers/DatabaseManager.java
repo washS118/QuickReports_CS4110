@@ -28,7 +28,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String TEMP = "temperature";
 
     public DatabaseManager(Context context) {
-        super(context, DBName, null, 1);
+        super(context, DBName, null, 2);
         SQLiteDatabase db = this.getWritableDatabase();
     }
 
@@ -129,11 +129,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return report;
     }
 
-    public Cursor getReportById(int ID) {
+    public ReportModel getReportById(int ID) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = String.format("SELECT * FROM %s WHERE %s = %d", REPORTS_TABLE, DatabaseManager.ID, ID);
         Cursor res = db.rawQuery(query,null);
-        return res;
+
+        ReportModel[] results = getModelArray(res);
+        if (results.length < 1) return null;
+        return results[0];
     }
 
     public ReportModel[] getAllReports() {

@@ -46,7 +46,8 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Handles creating, editing, and viewing of a report.
+ *
  * Activities that contain this fragment must implement the
  * {@link RecordEditView.OnFragmentInteractionListener} interface
  * to handle interaction events.
@@ -71,13 +72,22 @@ public class RecordEditView extends Fragment {
     //endregion
 
     private int reportId;
-    private ReportModel model = new ReportModel();
+    private ReportModel model;
 
     //region Constructors
+
+    /**
+     * Empty constructor
+     */
     public RecordEditView() {
         // Required empty public constructor
     }
 
+    /**
+     * Instantiates a new RecordEditView
+     * @param reportId Id of the report to load (0 if new)
+     * @return A new RecordEditView
+     */
     public static RecordEditView newInstance(int reportId) {
         RecordEditView fragment = new RecordEditView();
         Bundle args = new Bundle();
@@ -150,6 +160,7 @@ public class RecordEditView extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
+                    LoadReportFromForm();
                     camera.TakePicture();
                 } catch (IOException e){
                     Log.println(Log.ERROR, LogTag, e.getStackTrace().toString());
@@ -340,6 +351,12 @@ public class RecordEditView extends Fragment {
 
     private void InitNewReport(){
         Log.println(Log.DEBUG, LogTag, "Creating new report.");
+
+        if (model != null) {
+            Log.println(Log.DEBUG, LogTag, "Will not override current model");
+            return;
+        }
+
         model = new ReportModel();
         model.weather = new WeatherModel();
 
@@ -380,6 +397,12 @@ public class RecordEditView extends Fragment {
 
     private void LoadReportFromDB(){
         Log.println(Log.DEBUG, LogTag, "Loading Report From DB");
+        model = database.getReportById(reportId);
+        if (model == null) {
+            InitNewReport();
+        }
+
+        setPic();
     }
     //endregion
 }

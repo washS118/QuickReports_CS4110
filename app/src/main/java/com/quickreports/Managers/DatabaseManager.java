@@ -64,8 +64,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         contentValues.put(TITLE, model.title);
         contentValues.put(DESC, model.desc);
-        contentValues.put(SUBMIT_TIME, model.submisionTime.toString());
-        contentValues.put(SUBMIT_DATE, model.submisionDate.toString());
+        contentValues.put(SUBMIT_TIME, model.submissionTime.toString());
+        contentValues.put(SUBMIT_DATE, model.submissionDate.toString());
         contentValues.put(PHOTO_PATH, model.imgPath);
         contentValues.put(CONDITION, model.weather.condition);
         contentValues.put(TEMP, model.weather.temp);
@@ -85,16 +85,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
         while(cursor.moveToNext()) {
             ReportModel model = new ReportModel();
             model.weather = new WeatherModel();
-
             model.id = cursor.getInt(0);
             model.title = cursor.getString(1);
             model.desc = cursor.getString(2);
-            model.submisionTime = LocalTime.parse(cursor.getString(3));
-            model.submisionDate = LocalDate.parse(cursor.getString(4));
+            model.submissionTime = LocalTime.parse(cursor.getString(3));
+            model.submissionDate = LocalDate.parse(cursor.getString(4));
             model.imgPath = cursor.getString(5);
             model.weather.condition = cursor.getString(6);
             model.weather.temp = cursor.getInt(7);
-
             reports.add(model);
         }
         return report;

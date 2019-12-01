@@ -68,30 +68,19 @@
         android:orientation="horizontal">
 
         <EditText
-<<<<<<< refs/remotes/origin/master
             android:id="@+id/txtWeather"
             android:layout_width="125dp"
             android:layout_height="50dp"
-=======
-            android:id="@+id/txtLocation"
-            android:layout_width="230dp"
-            android:layout_height="110dp"
->>>>>>> Record Edit View Revisions
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/text_borders"
             android:ems="10"
-<<<<<<< refs/remotes/origin/master
             android:hint="@string/input_weather"
-=======
-            android:hint="@string/enter_location_here"
->>>>>>> Record Edit View Revisions
             android:importantForAutofill="no"
             android:inputType="text"
             tools:ignore="LabelFor" />
 
-<<<<<<< refs/remotes/origin/master
         <EditText
             android:id="@+id/txtTemp"
             android:layout_width="125dp"
@@ -104,40 +93,6 @@
             android:hint="@string/temperature"
             android:importantForAutofill="no"
             android:inputType="numberSigned" />
-=======
-        <LinearLayout
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/txtWeather"
-                android:layout_width="125dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/text_borders"
-                android:ems="10"
-                android:hint="@string/input_weather"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                tools:ignore="LabelFor" />
-
-            <EditText
-                android:id="@+id/txtTemp"
-                android:layout_width="125dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/text_borders"
-                android:ems="10"
-                android:hint="@string/temperature"
-                android:importantForAutofill="no"
-                android:inputType="numberSigned" />
-        </LinearLayout>
->>>>>>> Record Edit View Revisions
 
     </LinearLayout>
 
@@ -149,11 +104,7 @@
         <EditText
             android:id="@+id/txtDesc"
             android:layout_width="380dp"
-<<<<<<< refs/remotes/origin/master
             android:layout_height="76dp"
-=======
-            android:layout_height="150dp"
->>>>>>> Record Edit View Revisions
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"

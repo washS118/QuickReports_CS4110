@@ -41,14 +41,20 @@ public class RecordListView extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            btnCreateReport = getView().findViewById(R.id.btnCreateReport);
-            btnCreateReport.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LoadRecordEditView();
-                }
-            });
+
         }
+    }
+
+    @Override
+    public void onStart(){
+        btnCreateReport = getView().findViewById(R.id.btnCreateReport);
+        btnCreateReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoadRecordEditView();
+            }
+        });
+        super.onStart();
     }
 
     @Override

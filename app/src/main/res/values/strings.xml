@@ -11,4 +11,6 @@
     <string name="weather">Weather</string>
     <string name="input_weather_conditions">Input Weather Conditions</string>
     <string name="input_weather">Input Weather</string>
+    <string name="enter_location_here">Enter Location Here</string>
+    <string name="temperature">Temperature</string>
 </resources>

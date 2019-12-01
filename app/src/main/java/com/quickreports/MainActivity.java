@@ -31,10 +31,11 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
         setContentView(R.layout.activity_main);
 
         fragmentManager = getSupportFragmentManager();
-        SetFragment(new RecordEditView());
+        SetFragment(new RecordListView());
         reportDB = new DatabaseManager(this);
     }
 
+    /*
     public void addReportData() {
         btnCreateReport.setOnClickListener(
                 new View.OnClickListener() {
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements RecordEditView.On
                 }
         );
     }
+    */
 
 
     public void LoadRecordListView(){

@@ -44,7 +44,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                         "%s TEXT," + //Submit Date
                         "%s TEXT," + //Photo Path
                         "%s TEXT," + //Condition
-                        "%s TEXT" + //Temp
+                        "%s REAL" + //Temp
                   ")"
                 ,REPORTS_TABLE, ID, TITLE, DESC, SUBMIT_TIME, SUBMIT_DATE, PHOTO_PATH, CONDITION, TEMP
         );

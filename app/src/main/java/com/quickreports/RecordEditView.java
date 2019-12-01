@@ -35,6 +35,9 @@ import com.quickreports.Models.WeatherModel;
 import java.io.IOException;
 
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -62,10 +65,9 @@ public class RecordEditView extends Fragment {
     //endregion
 
     //region Views
+    private EditText txtTitle, txtDate, txtTime, txtWeather, txtTemp, txtDesc;
     private ImageView imgPhoto;
     private Button btnSave, btnBack;
-    private EditText txtDate, txtTime;
-    private SimpleDateFormat dateFormat, timeFormat;
     //endregion
 
     private int reportId;
@@ -99,31 +101,48 @@ public class RecordEditView extends Fragment {
         context = getActivity();
         camera = new CameraManager(this);
 
+        //region Get Form Views
+        View v = getView();
+        txtTitle = v.findViewById(R.id.txtTitle);
+        txtDate = v.findViewById(R.id.txtDate);
+        txtTime = v.findViewById(R.id.txtTime);
+        txtWeather = v.findViewById(R.id.txtWeather);
+        txtTemp = v.findViewById(R.id.txtTemp);
+        txtDesc = v.findViewById(R.id.txtDesc);
 
-        txtDate = getView().findViewById(R.id.txtDate);
-        txtTime = getView().findViewById(R.id.txtTime);
+        imgPhoto = v.findViewById(R.id.imgPhoto);
+
+        btnSave = v.findViewById(R.id.btnSave);
+        btnBack = v.findViewById(R.id.btnBack);
+        //endregion
+
         txtDate.setEnabled(false);
         txtTime.setEnabled(false);
 
-        dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
-        timeFormat = new SimpleDateFormat("h:mm a", Locale.getDefault());
-
-        String date = dateFormat.format(Calendar.getInstance().getTime());
-        String time = timeFormat.format(Calendar.getInstance().getTime());
-
-        txtDate.setText(date);
-        txtTime.setText(time);
-
-        btnSave = getView().findViewById(R.id.btnSave);
+        //region Set Click Listeners
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity().getApplicationContext(), "New Report is Saved.", Toast.LENGTH_SHORT).show();
+                LoadReportFromForm();
+
+                String message;
+                if (model.id == 0){
+                    if (database.addReport(model)) {
+                        message = "New Report Saved";
+                    }
+                    else {
+                        message = "Save Failed";
+                    }
+                }
+                else {
+                    message = "Update Not Implemented";
+                }
+
+                Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 LoadRecordListView();
             }
         });
 
-        btnBack = getView().findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +150,6 @@ public class RecordEditView extends Fragment {
             }
         });
 
-        imgPhoto = (ImageView) getView().findViewById(R.id.imgPhoto);
         imgPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,9 +160,14 @@ public class RecordEditView extends Fragment {
                 }
             }
         });
+        //endregion
 
-        SetupWeather();
-        GetWeather();
+        if (reportId == 0) {
+            InitNewReport();
+        }
+        else {
+            LoadReportFromDB();
+        }
 
         super.onStart();
     }
@@ -207,6 +230,7 @@ public class RecordEditView extends Fragment {
             camera.galleryAddPic();
             Log.println(Log.DEBUG, LogTag, "Posted pic to gallery");
 
+            model.imgPath = camera.GetCurrentPhotoPath();
             setPic();
             Log.println(Log.DEBUG, LogTag, "Loaded pic in app");
 
@@ -218,6 +242,11 @@ public class RecordEditView extends Fragment {
         // Get the dimensions of the View
         int targetW = imgPhoto.getWidth();
         int targetH = imgPhoto.getHeight();
+
+        if (targetW == 0 || targetH == 0){
+            Log.println(Log.ERROR, LogTag, "Image view size is 0");
+            return;
+        }
 
         Log.println(Log.DEBUG, LogTag, "Get bitmap size");
         // Get the dimensions of the bitmap
@@ -237,8 +266,8 @@ public class RecordEditView extends Fragment {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Log.println(Log.DEBUG, LogTag, "Load pic from device");
-        Bitmap bitmap = BitmapFactory.decodeFile(camera.GetCurrentPhotoPath(), bmOptions);
+        Log.println(Log.DEBUG, LogTag, String.format("Loading '%s' from device", model.imgPath));
+        Bitmap bitmap = BitmapFactory.decodeFile(model.imgPath, bmOptions);
         imgPhoto.setImageBitmap(bitmap);
     }
 
@@ -249,7 +278,10 @@ public class RecordEditView extends Fragment {
         weather.SetSuccessFunction(new ApiSuccess() {
             @Override
             public void success(WeatherModel newModel) {
-                Log.println(Log.DEBUG, LogTag, "Weather Success");
+                Log.println(Log.DEBUG, LogTag, String.format("Weather Success\n" +
+                        "\tCond: %s\n" +
+                        "\tTemp: %f\n"
+                        ,newModel.condition, newModel.temp));
                 model.weather = newModel;
             }
         });
@@ -263,13 +295,19 @@ public class RecordEditView extends Fragment {
     }
 
     private void GetWeather(){
+        LoadReportFromForm();
+
+        if (weather == null) {
+            SetupWeather();
+        }
+
         Location location = GetLocation();
         if (location == null) return;
 
         Log.println(Log.ERROR, LogTag, "Start Request");
         weather.GetWeatherData(location);
-        Log.println(Log.ERROR, "Edit", "Start Request");
-        weather.GetWeatherData(location);
+
+        LoadFormFromModel();
     }
 
     private Location GetLocation(){
@@ -292,6 +330,60 @@ public class RecordEditView extends Fragment {
 
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    }
+
+    private void LoadFormFromModel(){
+        Log.println(Log.DEBUG, LogTag, "Loading Form From Model");
+        txtTitle.setText(model.title);
+        txtDate.setText(model.submisionDate.toString());
+        txtTime.setText(model.submisionTime.toString());
+        txtWeather.setText(model.weather.condition);
+        txtTemp.setText(Double.toString(model.weather.temp));
+        txtDesc.setText(model.desc);
+    }
+
+    private void InitNewReport(){
+        Log.println(Log.DEBUG, LogTag, "Creating new report.");
+        model = new ReportModel();
+        model.weather = new WeatherModel();
+
+        model.id = 0;
+        model.title = "";
+        model.desc = "";
+        model.submisionDate = LocalDate.now();
+        model.submisionTime = LocalTime.now();
+        model.imgPath = "";
+
+        GetWeather();
+    }
+
+    private void LoadReportFromForm(){
+        Log.println(Log.DEBUG, LogTag, "Loading report from form");
+        model.title = txtTitle.getText().toString();
+        model.desc = txtDesc.getText().toString();
+        model.weather.condition = txtWeather.getText().toString();
+
+        try {
+            model.weather.temp = Double.parseDouble(txtTemp.getText().toString());
+        } catch (NumberFormatException e) {
+            Log.println(Log.ERROR, LogTag, "Failed to parse temp");
+        }
+
+        try {
+            model.submisionTime = LocalTime.parse(txtTime.getText().toString());
+        } catch (DateTimeException e){
+            Log.println(Log.ERROR, LogTag, "Failed to parse time");
+        }
+
+        try {
+            model.submisionDate = LocalDate.parse(txtDate.getText().toString());
+        } catch (DateTimeException e) {
+            Log.println(Log.ERROR, LogTag, "Failed to parse date");
+        }
+    }
+
+    private void LoadReportFromDB(){
+        Log.println(Log.DEBUG, LogTag, "Loading Report From DB");
     }
     //endregion
 }

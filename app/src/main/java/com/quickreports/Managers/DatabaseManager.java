@@ -58,7 +58,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addReport(ReportModel model) {
+    public boolean InsertUpdateReport(ReportModel model){
+        if (model.id == 0) {
+            return addReport(model);
+        }
+        else {
+            return updateReport(model);
+        }
+    }
+
+    private boolean addReport(ReportModel model) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -78,6 +87,28 @@ public class DatabaseManager extends SQLiteOpenHelper {
             return true;
         }
     }
+
+    private boolean updateReport(ReportModel model) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(TITLE, model.title);
+        contentValues.put(DESC, model.desc);
+        contentValues.put(SUBMIT_TIME, model.submissionTime.toString());
+        contentValues.put(SUBMIT_DATE, model.submissionDate.toString());
+        contentValues.put(PHOTO_PATH, model.imgPath);
+        contentValues.put(CONDITION, model.weather.condition);
+        contentValues.put(TEMP, model.weather.temp);
+
+        long result = db.update(REPORTS_TABLE, contentValues, String.format("%s = %d", ID, model.id), null);
+        if(result == -1) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
     private ReportModel[] getModelArray(Cursor cursor) {
         ArrayList<ReportModel> reports = new ArrayList<>();
         ReportModel[] report = new ReportModel[reports.size()];

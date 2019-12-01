@@ -7,7 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface ApiService {
-    @GET("weather")
+    @GET("weather?units=imperial")
     Single<Model> GetWeatherData(@Query("lat") double lat,
                                  @Query("lon") double lon,
                                  @Query("appid") String appid);

@@ -335,8 +335,8 @@ public class RecordEditView extends Fragment {
     private void LoadFormFromModel(){
         Log.println(Log.DEBUG, LogTag, "Loading Form From Model");
         txtTitle.setText(model.title);
-        txtDate.setText(model.submisionDate.toString());
-        txtTime.setText(model.submisionTime.toString());
+        txtDate.setText(model.submissionDate.toString());
+        txtTime.setText(model.submissionTime.toString());
         txtWeather.setText(model.weather.condition);
         txtTemp.setText(Double.toString(model.weather.temp));
         txtDesc.setText(model.desc);
@@ -350,8 +350,8 @@ public class RecordEditView extends Fragment {
         model.id = 0;
         model.title = "";
         model.desc = "";
-        model.submisionDate = LocalDate.now();
-        model.submisionTime = LocalTime.now();
+        model.submissionDate = LocalDate.now();
+        model.submissionTime = LocalTime.now();
         model.imgPath = "";
 
         GetWeather();
@@ -370,13 +370,13 @@ public class RecordEditView extends Fragment {
         }
 
         try {
-            model.submisionTime = LocalTime.parse(txtTime.getText().toString());
+            model.submissionTime = LocalTime.parse(txtTime.getText().toString());
         } catch (DateTimeException e){
             Log.println(Log.ERROR, LogTag, "Failed to parse time");
         }
 
         try {
-            model.submisionDate = LocalDate.parse(txtDate.getText().toString());
+            model.submissionDate = LocalDate.parse(txtDate.getText().toString());
         } catch (DateTimeException e) {
             Log.println(Log.ERROR, LogTag, "Failed to parse date");
         }

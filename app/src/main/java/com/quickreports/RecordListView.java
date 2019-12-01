@@ -7,10 +7,17 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
+
+import com.quickreports.Managers.DatabaseManager;
+import com.quickreports.Models.ReportModel;
+
+import java.util.ArrayList;
 
 
 /**
@@ -24,10 +31,14 @@ import android.widget.Button;
 public class RecordListView extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Button btnCreateReport;
+    DatabaseManager db;
+    ReportModel[] reportModelArray;
+    ListView lstReport;
+
     public RecordListView() {
         // Required empty public constructor
-    }
 
+    }
 
     // TODO: Rename and change types and number of parameters
     public static RecordListView newInstance() {
@@ -47,6 +58,8 @@ public class RecordListView extends Fragment {
 
     @Override
     public void onStart(){
+        db = new DatabaseManager(getActivity());
+        reportModelArray = db.getAllReports();
         btnCreateReport = getView().findViewById(R.id.btnCreateReport);
         btnCreateReport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +67,14 @@ public class RecordListView extends Fragment {
                 LoadRecordEditView();
             }
         });
+        lstReport = getView().findViewById(R.id.lstReports);
+        lstReport.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                LoadRecordEditView();
+            }
+        });
+
         super.onStart();
     }
 

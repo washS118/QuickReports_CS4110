@@ -91,6 +91,6 @@ public class RecordListView extends Fragment {
     }
 
     private void LoadRecordEditView(){
-        ((MainActivity)getActivity()).LoadRecordEditView();
+        ((MainActivity)getActivity()).LoadRecordEditView(0);
     }
 }

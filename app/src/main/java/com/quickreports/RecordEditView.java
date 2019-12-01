@@ -69,7 +69,7 @@ public class RecordEditView extends Fragment {
     //endregion
 
     private int reportId;
-    private ReportModel model;
+    private ReportModel model = new ReportModel();
 
     //region Constructors
     public RecordEditView() {

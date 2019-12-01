@@ -37,14 +37,15 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String query = String.format(
                 "CREATE TABLE %s"//Table Name
                 + "(" +
-                        "%s INTEGER PRIMARY KEY AUTOINCREMENT" + //ID
-                        "%s TEXT" + //Title
-                        "%s TEXT" + //Description
-                        "%s TEXT" + //Submit Time
-                        "%s TEXT" + //Submit Date
-                        "%s TEXT" + //Photo Path
-                        "%s TEXT" + //Condition
-                        "%s TEXT"   //Temp
+                        "%s INTEGER PRIMARY KEY AUTOINCREMENT," + //ID
+                        "%s TEXT," + //Title
+                        "%s TEXT," + //Description
+                        "%s TEXT," + //Submit Time
+                        "%s TEXT," + //Submit Date
+                        "%s TEXT," + //Photo Path
+                        "%s TEXT," + //Condition
+                        "%s TEXT" + //Temp
+                  ")"
                 ,REPORTS_TABLE, ID, TITLE, DESC, SUBMIT_TIME, SUBMIT_DATE, PHOTO_PATH, CONDITION, TEMP
         );
         db.execSQL(query);

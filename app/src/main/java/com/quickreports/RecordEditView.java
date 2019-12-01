@@ -100,6 +100,7 @@ public class RecordEditView extends Fragment {
     public void onStart(){
         context = getActivity();
         camera = new CameraManager(this);
+        database = new DatabaseManager(context);
 
         //region Get Form Views
         View v = getView();
@@ -126,16 +127,11 @@ public class RecordEditView extends Fragment {
                 LoadReportFromForm();
 
                 String message;
-                if (model.id == 0){
-                    if (database.addReport(model)) {
-                        message = "New Report Saved";
-                    }
-                    else {
-                        message = "Save Failed";
-                    }
+                if (database.InsertUpdateReport(model)) {
+                    message = "Report Saved";
                 }
                 else {
-                    message = "Update Not Implemented";
+                    message = "Save Failed";
                 }
 
                 Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -283,6 +279,7 @@ public class RecordEditView extends Fragment {
                         "\tTemp: %f\n"
                         ,newModel.condition, newModel.temp));
                 model.weather = newModel;
+                LoadFormFromModel();
             }
         });
 
@@ -290,6 +287,7 @@ public class RecordEditView extends Fragment {
             @Override
             public void error(String message) {
                 Log.println(Log.ERROR, LogTag, "Weather Error:" + message);
+                LoadFormFromModel();
             }
         });
     }
@@ -306,8 +304,6 @@ public class RecordEditView extends Fragment {
 
         Log.println(Log.ERROR, LogTag, "Start Request");
         weather.GetWeatherData(location);
-
-        LoadFormFromModel();
     }
 
     private Location GetLocation(){

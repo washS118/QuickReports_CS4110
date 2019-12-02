@@ -32,6 +32,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
     }
 
+    /*
+    This function creates the table that the data will be inserted to.
+    The table has columns for the report title, description, submit time, submit date,
+    the path of the photo, the weather conditions, and the temperature.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = String.format(
@@ -58,6 +63,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /*
+    This function checks whether the report should be created or if the report is being updated.
+     */
     public boolean InsertUpdateReport(ReportModel model){
         if (model.id == 0) {
             return addReport(model);
@@ -67,6 +75,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+    /*
+    This function will add the report to the database with the the title, description, time, date,
+    path of the photo, and the weather.
+     */
     private boolean addReport(ReportModel model) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -88,6 +100,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+    /*
+    This function updates the report with current information and allows the user to edit a previously submitted report.
+     */
     private boolean updateReport(ReportModel model) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -109,6 +124,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+    /*
+    This function returns an array that is filled with the data to be inserted into the database.
+     */
     private ReportModel[] getModelArray(Cursor cursor) {
         ArrayList<ReportModel> reports = new ArrayList<>();
         ReportModel[] report = new ReportModel[reports.size()];
@@ -130,6 +148,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public ReportModel getReportById(int ID) {
+    /*
+    This function will query the database and give the report data by using the reports' rID.
+     */
         SQLiteDatabase db = this.getWritableDatabase();
         String query = String.format("SELECT * FROM %s WHERE %s = %d", REPORTS_TABLE, DatabaseManager.ID, ID);
         Cursor res = db.rawQuery(query,null);
@@ -139,6 +160,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return results[0];
     }
 
+    /*
+    This function retrieves all the reports submitted into the database and returns it in an array.
+     */
     public ReportModel[] getAllReports() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = String.format("SELECT * FROM %s", REPORTS_TABLE);

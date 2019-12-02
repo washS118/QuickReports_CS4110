@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -55,10 +56,8 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
  * Use the {@link RecordEditView#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecordEditView extends Fragment {
+public class RecordEditView extends QuickReportsView implements View.OnClickListener{
     private static String LogTag = "QuickReports-Edit";
-    private OnFragmentInteractionListener mListener;
-    private Context context;
 
     //region Managers
     private CameraManager camera;
@@ -71,6 +70,8 @@ public class RecordEditView extends Fragment {
     private ImageView imgPhoto;
     private Button btnSave, btnBack;
     //endregion
+
+    private int imgWidth, imgHeight;
 
     private int reportId;
     private ReportModel model;
@@ -90,6 +91,7 @@ public class RecordEditView extends Fragment {
      * @return A new RecordEditView
      */
     public static RecordEditView newInstance(int reportId) {
+        Log.println(Log.DEBUG, LogTag,"Creating instance with id = " + reportId);
         RecordEditView fragment = new RecordEditView();
         Bundle args = new Bundle();
         args.putInt("reportId", reportId);
@@ -103,85 +105,12 @@ public class RecordEditView extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            reportId = getArguments().getInt("reportId");
         }
     }
 
     @Override
     public void onStart(){
-        context = getActivity();
-        camera = new CameraManager(this);
-        database = new DatabaseManager(context);
-
-        //region Get Form Views
-        View v = getView();
-        txtTitle = v.findViewById(R.id.txtTitle);
-        txtDate = v.findViewById(R.id.txtDate);
-        txtTime = v.findViewById(R.id.txtTime);
-        txtWeather = v.findViewById(R.id.txtWeather);
-        txtTemp = v.findViewById(R.id.txtTemp);
-        txtDesc = v.findViewById(R.id.txtDesc);
-
-        imgPhoto = v.findViewById(R.id.imgPhoto);
-
-        btnSave = v.findViewById(R.id.btnSave);
-        btnBack = v.findViewById(R.id.btnBack);
-        //endregion
-
-        txtDate.setEnabled(false);
-        txtTime.setEnabled(false);
-        txtWeather.setEnabled(false);
-        txtTemp.setEnabled(false);
-
-        //region Set Click Listeners
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoadReportFromForm();
-                if (TextUtils.isEmpty(txtTitle.getText())){
-                    txtTitle.setError("Title is Required.");
-                }else{
-                    String message;
-                    if (database.InsertUpdateReport(model)) {
-                        message = "Report Saved";
-                    }
-                    else {
-                        message = "Save Failed";
-                    }
-
-                    Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                    LoadRecordListView();
-                }
-            }
-        });
-
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoadRecordListView();
-            }
-        });
-
-        imgPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    LoadReportFromForm();
-                    camera.TakePicture();
-                } catch (IOException e){
-                    Log.println(Log.ERROR, LogTag, e.getStackTrace().toString());
-                }
-            }
-        });
-        //endregion
-
-        if (reportId == 0) {
-            InitNewReport();
-        }
-        else {
-            LoadReportFromDB();
-        }
-
         super.onStart();
     }
 
@@ -192,22 +121,6 @@ public class RecordEditView extends Fragment {
         return inflater.inflate(R.layout.fragment_record_edit_view, container, false);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
     //endregion
 
     /**
@@ -235,6 +148,103 @@ public class RecordEditView extends Fragment {
     }
 
     //region Main Logic
+    protected void SetupFragment(){
+        Log.println(Log.DEBUG, LogTag, "Setup");
+        context = getActivity();
+        camera = new CameraManager(this);
+        database = new DatabaseManager(context);
+
+        //region Get Form Views
+        View v = getView();
+        txtTitle = v.findViewById(R.id.txtTitle);
+        txtDate = v.findViewById(R.id.txtDate);
+        txtTime = v.findViewById(R.id.txtTime);
+        txtWeather = v.findViewById(R.id.txtWeather);
+        txtTemp = v.findViewById(R.id.txtTemp);
+        txtDesc = v.findViewById(R.id.txtDesc);
+
+        imgPhoto = v.findViewById(R.id.imgPhoto);
+
+        btnSave = v.findViewById(R.id.btnSave);
+        btnBack = v.findViewById(R.id.btnBack);
+        //endregion
+
+        //region Set Click Listeners
+        btnSave.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+        imgPhoto.setOnClickListener(this);
+        //endregion
+
+        //region Set Read Only
+        txtDate.setEnabled(false);
+        txtTime.setEnabled(false);
+        txtWeather.setEnabled(false);
+        txtTemp.setEnabled(false);
+        //endregion
+
+        ViewTreeObserver vto = imgPhoto.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                imgPhoto.getViewTreeObserver().removeOnPreDrawListener(this);
+                imgHeight = imgPhoto.getMeasuredHeight();
+                imgWidth = imgPhoto.getMeasuredWidth();
+
+                if (reportId == 0) {
+                    InitNewReport();
+                }
+                else {
+                    LoadReportFromDB();
+                }
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == btnSave){
+            BtnSaveClicked();
+        }
+        else if (v == btnBack){
+            BtnBackClicked();
+        }
+        else if (v == imgPhoto){
+            ImgClicked();
+        }
+    }
+
+    private void BtnSaveClicked(){
+        LoadReportFromForm();
+        if (TextUtils.isEmpty(txtTitle.getText())){
+            txtTitle.setError("Title is Required.");
+        }else{
+            String message;
+            if (database.InsertUpdateReport(model)) {
+                message = "Report Saved";
+            }
+            else {
+                message = "Save Failed";
+            }
+
+            Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            LoadRecordListView();
+        }
+    }
+
+    private void BtnBackClicked(){
+        LoadRecordListView();
+    }
+
+    private void ImgClicked(){
+        try {
+            LoadReportFromForm();
+            camera.TakePicture();
+        } catch (IOException e){
+            Log.println(Log.ERROR, LogTag, e.getStackTrace().toString());
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == camera.GetRequestCode() && resultCode == RESULT_OK) {
@@ -251,17 +261,16 @@ public class RecordEditView extends Fragment {
     }
 
     private void setPic() {
-        Log.println(Log.DEBUG, LogTag, "Set Picture");
+        Log.println(Log.DEBUG, LogTag, String.format("Loading '%s' from device", model.imgPath));
         // Get the dimensions of the View
-        int targetW = imgPhoto.getWidth();
-        int targetH = imgPhoto.getHeight();
+        int targetW = imgWidth;
+        int targetH = imgHeight;
 
         if (targetW == 0 || targetH == 0){
             Log.println(Log.ERROR, LogTag, "Image view size is 0");
             return;
         }
 
-        Log.println(Log.DEBUG, LogTag, "Get bitmap size");
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
@@ -269,19 +278,17 @@ public class RecordEditView extends Fragment {
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
-        Log.println(Log.DEBUG, LogTag, "calculate bitmap scale");
         // Determine how much to scale down the image
         int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
 
-        Log.println(Log.DEBUG, LogTag, "Set bitmap size");
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Log.println(Log.DEBUG, LogTag, String.format("Loading '%s' from device", model.imgPath));
         Bitmap bitmap = BitmapFactory.decodeFile(model.imgPath, bmOptions);
         imgPhoto.setImageBitmap(bitmap);
+        imgPhoto.setForeground(null);
     }
 
     private void SetupWeather() {
@@ -337,6 +344,7 @@ public class RecordEditView extends Fragment {
 
         if (!hasPermission){
             Log.println(Log.ERROR, LogTag, "Location Permission Denied");
+            return null;
         } else {
             Log.println(Log.DEBUG, LogTag, "Location Permission Granted");
         }
@@ -409,6 +417,8 @@ public class RecordEditView extends Fragment {
         }
 
         setPic();
+
+        LoadFormFromModel();
     }
     //endregion
 }

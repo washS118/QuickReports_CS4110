@@ -11,4 +11,9 @@ public class ReportModel {
     public LocalTime submissionTime;
     public String imgPath;
     public WeatherModel weather;
+
+    @Override
+    public String toString(){
+        return String.format("%s - %s", title, submissionDate.toString());
+    }
 }

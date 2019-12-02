@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.quickreports.Models.ReportModel;
 import com.quickreports.Models.WeatherModel;
@@ -14,6 +15,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class DatabaseManager extends SQLiteOpenHelper {
+    private static final String LogTag = "QuickReports-DB";
 
     public static final String DBName = "QuickReports.db";
 
@@ -53,6 +55,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.println(Log.DEBUG, LogTag, "Upgrade DB");
         String query = String.format("DROP TABLE %s", REPORTS_TABLE);
         db.execSQL("DROP TABLE " + REPORTS_TABLE);
         onCreate(db);
@@ -60,9 +63,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public boolean InsertUpdateReport(ReportModel model){
         if (model.id == 0) {
+            Log.println(Log.DEBUG, LogTag, "Insert Report");
             return addReport(model);
         }
         else {
+            Log.println(Log.DEBUG, LogTag, "Update Report");
             return updateReport(model);
         }
     }
@@ -110,10 +115,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     private ReportModel[] getModelArray(Cursor cursor) {
+        Log.println(Log.DEBUG, LogTag, "Getting Model Array");
         ArrayList<ReportModel> reports = new ArrayList<>();
-        ReportModel[] report = new ReportModel[reports.size()];
-        report = reports.toArray(report);
         while(cursor.moveToNext()) {
+            Log.println(Log.DEBUG, LogTag, "Parsing report");
             ReportModel model = new ReportModel();
             model.weather = new WeatherModel();
             model.id = cursor.getInt(0);
@@ -126,7 +131,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             model.weather.temp = cursor.getInt(7);
             reports.add(model);
         }
-        return report;
+        return reports.toArray(new ReportModel[reports.size()]);
     }
 
     public ReportModel getReportById(int ID) {

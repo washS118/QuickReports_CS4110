@@ -8,9 +8,12 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -27,13 +30,15 @@ import com.quickreports.Models.ReportModel;
  * Use the {@link RecordListView#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecordListView extends Fragment {
-    private OnFragmentInteractionListener mListener;
-    private Button btnCreateReport;
-    DatabaseManager db;
-    ReportModel[] reportModelArray;
-    ListView lstReport;
+public class RecordListView extends QuickReportsView implements AdapterView.OnItemClickListener, View.OnClickListener{
+    private static final String LogTag = "QuickReports-List";
 
+    private Button btnCreateReport;
+    private DatabaseManager db;
+    private ReportModel[] reportModelArray;
+    private ListView lstReport;
+
+    //region Constructors
     public RecordListView() {
         // Required empty public constructor
 
@@ -46,7 +51,9 @@ public class RecordListView extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    //endregion
 
+    //region Lifecycle
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,61 +63,69 @@ public class RecordListView extends Fragment {
     }
 
     @Override
-    public void onStart(){
-        db = new DatabaseManager(getActivity());
-        reportModelArray = db.getAllReports();
-        btnCreateReport = getView().findViewById(R.id.btnCreateReport);
-        btnCreateReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoadRecordEditView();
-            }
-        });
-
-
-        super.onStart();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_record_list_view, container, false);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    //endregion
+
+    //region Main Logic
+    protected void SetupFragment() {
+        context = getActivity();
+
+        //region Get Form Elements
+        View v = getView();
+        btnCreateReport = v.findViewById(R.id.btnCreateReport);
+        lstReport = v.findViewById(R.id.lstReports);
+        //endregion
+
+        //region Get Data
+        db = new DatabaseManager(context);
+        reportModelArray = db.getAllReports();
+        Log.println(Log.DEBUG, LogTag, "Report Count = " + reportModelArray.length);
+        //endregion
+
+        //region Set Click Listeners
+        lstReport.setOnItemClickListener(this);
+        btnCreateReport.setOnClickListener(this);
+        //endregion
+
+        //region Configure List
+        ArrayAdapter<ReportModel> adapter = new ArrayAdapter<ReportModel>(context, R.layout.adapter_view_layout, R.id.txtContent, reportModelArray);
+        lstReport.setAdapter(adapter);
+        //endregion
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    private void LoadRecordEditView(int id){
+        ((MainActivity)getActivity()).LoadRecordEditView(id);
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Handles button clicks on the screen
+     * @param v
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onClick(View v) {
+        LoadRecordEditView(0);
     }
 
-    private void LoadRecordEditView(){
-        ((MainActivity)getActivity()).LoadRecordEditView(0);
+    /**
+     * Handles clicking an item in the list view
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ReportModel item = (ReportModel) lstReport.getItemAtPosition(position);
+        Log.println(Log.DEBUG, LogTag, "Report Selected\n" +
+                "\tTitle = " + item.title + "\n" +
+                "\tId = " + item.id);
+
+        LoadRecordEditView(item.id);
     }
+    //endregion
 }

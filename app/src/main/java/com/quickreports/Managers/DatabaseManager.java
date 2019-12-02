@@ -147,10 +147,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return report;
     }
 
-    public ReportModel getReportById(int ID) {
     /*
     This function will query the database and give the report data by using the reports' rID.
      */
+    public ReportModel getReportById(int ID) {
+
         SQLiteDatabase db = this.getWritableDatabase();
         String query = String.format("SELECT * FROM %s WHERE %s = %d", REPORTS_TABLE, DatabaseManager.ID, ID);
         Cursor res = db.rawQuery(query,null);

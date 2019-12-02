@@ -18,6 +18,8 @@
     <ListView
         android:id="@+id/lstReports"
         android:layout_width="414dp"
-        android:layout_height="523dp" />
+        android:layout_height="523dp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" />
 
 </FrameLayout>

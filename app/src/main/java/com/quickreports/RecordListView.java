@@ -17,7 +17,6 @@ import android.widget.ListView;
 import com.quickreports.Managers.DatabaseManager;
 import com.quickreports.Models.ReportModel;
 
-import java.util.ArrayList;
 
 
 /**
@@ -67,13 +66,7 @@ public class RecordListView extends Fragment {
                 LoadRecordEditView();
             }
         });
-        lstReport = getView().findViewById(R.id.lstReports);
-        lstReport.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                LoadRecordEditView();
-            }
-        });
+
 
         super.onStart();
     }

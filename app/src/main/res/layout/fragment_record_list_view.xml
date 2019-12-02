@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#464646"
     tools:context=".RecordListView">
 
     <Button
@@ -19,6 +20,7 @@
         android:id="@+id/lstReports"
         android:layout_width="414dp"
         android:layout_height="523dp"
+        android:background="#d3d3d3 "
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true" />
 

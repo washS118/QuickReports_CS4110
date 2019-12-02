@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3F51B5"
+    android:background="#464646"
     android:orientation="vertical"
     tools:context=".RecordEditView">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:orientation="horizontal">
 
         <EditText
@@ -30,12 +30,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/txtDate"
-            android:layout_width="150dp"
+            android:layout_width="120dp"
             android:layout_height="50dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
@@ -43,11 +43,13 @@
             android:ems="10"
             android:importantForAutofill="no"
             android:inputType="date"
+            android:singleLine="true"
+            android:textAlignment="center"
             tools:ignore="LabelFor" />
 
         <EditText
             android:id="@+id/txtTime"
-            android:layout_width="75dp"
+            android:layout_width="70dp"
             android:layout_height="50dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
@@ -56,17 +58,18 @@
             android:importantForAutofill="no"
             android:includeFontPadding="true"
             android:inputType="time"
+            android:textAlignment="center"
             tools:ignore="LabelFor" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/txtWeather"
-            android:layout_width="125dp"
+            android:layout_width="120dp"
             android:layout_height="50dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
@@ -75,11 +78,12 @@
             android:hint="@string/input_weather"
             android:importantForAutofill="no"
             android:inputType="text"
+            android:textAlignment="center"
             tools:ignore="LabelFor" />
 
         <EditText
             android:id="@+id/txtTemp"
-            android:layout_width="125dp"
+            android:layout_width="70dp"
             android:layout_height="50dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
@@ -87,13 +91,14 @@
             android:ems="10"
             android:hint="@string/temperature"
             android:importantForAutofill="no"
-            android:inputType="numberSigned" />
+            android:inputType="numberSigned"
+            android:textAlignment="center" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:orientation="horizontal">
 
         <EditText
@@ -117,7 +122,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="195dp"
+        android:layout_height="200dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -126,10 +131,11 @@
             android:layout_height="180dp"
             android:layout_gravity="center|top"
             android:layout_marginStart="75dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:adjustViewBounds="true"
             android:background="@drawable/image_border"
             android:contentDescription="@string/app_name"
+            android:foreground="@android:drawable/ic_menu_camera"
             android:visibility="visible"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 

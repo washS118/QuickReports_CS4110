@@ -14,6 +14,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,23 +130,28 @@ public class RecordEditView extends Fragment {
 
         txtDate.setEnabled(false);
         txtTime.setEnabled(false);
+        txtWeather.setEnabled(false);
+        txtTemp.setEnabled(false);
 
         //region Set Click Listeners
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LoadReportFromForm();
+                if (TextUtils.isEmpty(txtTitle.getText())){
+                    txtTitle.setError("Title is Required.");
+                }else{
+                    String message;
+                    if (database.InsertUpdateReport(model)) {
+                        message = "Report Saved";
+                    }
+                    else {
+                        message = "Save Failed";
+                    }
 
-                String message;
-                if (database.InsertUpdateReport(model)) {
-                    message = "Report Saved";
+                    Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                    LoadRecordListView();
                 }
-                else {
-                    message = "Save Failed";
-                }
-
-                Toast.makeText(getActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-                LoadRecordListView();
             }
         });
 
